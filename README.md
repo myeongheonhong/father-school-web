@@ -60,3 +60,20 @@ npm run build
 ## 배포 복구
 
 GitHub에서 문제가 된 콘텐츠 커밋을 Revert하면 자동으로 이전 내용이 재배포됩니다. 원본 주차 포스터는 `public/posters/`에 보관합니다.
+
+
+## B2 — 조편성 개선 버전 (2026-10-23)
+
+- 참가자: https://myeongheonhong.github.io/father-school-web/B2/
+- 조편성 바로가기: https://myeongheonhong.github.io/father-school-web/B2/?tab=groups
+- 관리자: https://myeongheonhong.github.io/father-school-web/B2/admin/
+
+B2는 기존 B를 보존하는 별도 경로입니다. 원본 조편성에서 조장·조원 이름만 입력했으며 전화번호와 명단 원본 이미지는 저장소에 포함하지 않았습니다. 10개 조 / 60명을 전체 명단으로 먼저 보여줍니다. 필요할 때 ‘이름으로 찾기’를 펼쳐 부분 이름 검색과 결과 강조를 사용할 수 있습니다. B2에는 내 조 기억하기나 개인 선택 정보 저장 기능이 없습니다.
+
+B2의 안내는 `public/content-b2.json`, 관리자 초안은 별도 IndexedDB 키 `b2`를 사용합니다. B2 관리자에서 내려받는 파일 이름도 `content-b2.json`입니다. 이 파일을 GitHub의 `public/` 폴더에 올리면 B2만 갱신됩니다. 기존 A/B/C의 안내와 초안을 덮어쓰지 않습니다.
+
+```sh
+npm run import-content -- /절대/경로/content-b2.json B2
+```
+
+기존 `/B/`는 초기 비교안으로 유지합니다. 후속 디자인은 `/B3/`처럼 별도 경로와 데이터 파일로 추가하며, 메인 전환은 선택이 확정된 후 진행합니다.

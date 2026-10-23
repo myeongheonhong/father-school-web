@@ -1,0 +1,120 @@
+{
+  "weeks": [
+    {
+      "title": "기도는 축복입니다.",
+      "date": "10월 25일 (주일)",
+      "time": "오후 3:30",
+      "scripture": "마태복음 6:9, 7:9–11",
+      "speaker": "장재기 목사",
+      "poster": "/posters/week-1.png",
+      "worship": "찬양 | 아버지 찬양팀\n기도 | 이건희 장로\n말씀 | 장재기 목사\n기도회 | 장재기 목사",
+      "questions": [
+        "나는 아버지이기 이전에 하나님의 자녀입니다. 나는 일상에서 하나님의 자녀 된 특권과 기쁨을 어떻게 누리고 있습니까?",
+        "자녀를 양육하면서 또는 (아내와 함께 하는 삶 가운데) 나의 한계를 느낄 때는 언제입니까? 그 순간 하나님의 도움을 어떻게 구하고 경험하고 있습니까?"
+      ]
+    },
+    {
+      "title": "엄마를 사랑했던 아버지",
+      "date": "11월 1일 (주일)",
+      "time": "오후 3:30",
+      "scripture": "골로새서 3:19",
+      "speaker": "이은호 목사",
+      "poster": "/posters/week-2.png",
+      "worship": "찬양 | 아버지 찬양팀\n기도 | 노윤식 장로\n말씀 | 이은호 목사\n기도회 | 박현정 전도사",
+      "questions": [
+        "나는 어떤 아버지로 기억될 것인가?",
+        "그것을 위해 내가 할 수 있는 일들은?"
+      ]
+    },
+    {
+      "title": "자녀의 신앙교육 어떻게 할 것인가?",
+      "date": "11월 8일 (주일)",
+      "time": "오후 3:30",
+      "scripture": "잠언 22:6",
+      "speaker": "최영환 목사",
+      "poster": "/posters/week-3.png",
+      "worship": "찬양 | 아버지 찬양팀\n기도 | 장태천 장로\n말씀 | 최영환 목사\n기도회 | 최영환 목사",
+      "questions": [
+        "근래 자녀와의 대화 가운데 나누었던 주제는 무엇인가요?",
+        "훗날 내 자녀가 “우리 아빠는 이렇게 신앙생활 하셨지?”라고 떠올릴 장면은 무엇인가요? 그리고 이번 주 그런 장면을 하나 만든다면 무엇을 하시겠습니까?"
+      ]
+    }
+  ],
+  "groupPlace": "5층",
+  "groupNotice": "조별 나눔 및 식사는 5층에서 진행합니다.",
+  "groups": [
+    {
+      "id": "b2-group-1",
+      "name": "1조",
+      "leader": "이건희",
+      "members": "최동휘\n장세윤\n박창홍\n정성호\n김태균",
+      "notice": ""
+    },
+    {
+      "id": "b2-group-2",
+      "name": "2조",
+      "leader": "노윤식",
+      "members": "심상선\n김현주\n이정운\n김용문\n이창환",
+      "notice": ""
+    },
+    {
+      "id": "b2-group-3",
+      "name": "3조",
+      "leader": "강정수",
+      "members": "김응만\n오형상\n박종옥\n최광윤\n정희진",
+      "notice": ""
+    },
+    {
+      "id": "b2-group-4",
+      "name": "4조",
+      "leader": "임은성",
+      "members": "임재도\n한대성\n박재현\n최성종\n김준하",
+      "notice": ""
+    },
+    {
+      "id": "b2-group-5",
+      "name": "5조",
+      "leader": "임양순",
+      "members": "김정헌\n강철규\n석봉현\n이근장\n전호진",
+      "notice": ""
+    },
+    {
+      "id": "b2-group-6",
+      "name": "6조",
+      "leader": "장래천",
+      "members": "이승찬\n김재성\n조성재\n이영락\n이진수",
+      "notice": ""
+    },
+    {
+      "id": "b2-group-7",
+      "name": "7조",
+      "leader": "인금환",
+      "members": "김수연\n신선문\n이석현\n박운호\n김천호",
+      "notice": ""
+    },
+    {
+      "id": "b2-group-8",
+      "name": "8조",
+      "leader": "정현기",
+      "members": "박찬준\n김광덕\n최용조\n남광우\n김재봉",
+      "notice": ""
+    },
+    {
+      "id": "b2-group-9",
+      "name": "9조",
+      "leader": "최영우",
+      "members": "윤은섭\n이정민\n김용범\n원종현\n김창수",
+      "notice": ""
+    },
+    {
+      "id": "b2-group-10",
+      "name": "10조",
+      "leader": "백무열",
+      "members": "김동수\n정태홍\n정승일\n강수호\n유성일",
+      "notice": ""
+    }
+  ],
+  "schemaVersion": 1,
+  "defaultVariant": null,
+  "updatedAt": "2026-10-23T00:00:00.000Z"
+}

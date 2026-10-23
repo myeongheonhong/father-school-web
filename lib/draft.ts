@@ -8,22 +8,22 @@ function openDB(): Promise<IDBDatabase> {
     request.onerror = () => reject(new Error('이 브라우저에서 임시 저장을 사용할 수 없습니다. 배포 파일을 내려받아 보관해주세요.'));
   });
 }
-export async function loadDraft(): Promise<Content | null> {
+export async function loadDraft(key = 'current'): Promise<Content | null> {
   const db = await openDB();
   try {
     return await new Promise((resolve, reject) => {
-      const request = db.transaction(STORE).objectStore(STORE).get('current');
+      const request = db.transaction(STORE).objectStore(STORE).get(key);
       request.onsuccess = () => { try { resolve(request.result ? validateContent(request.result) : null); } catch (e) { reject(e); } };
       request.onerror = () => reject(new Error('임시 저장 내용을 불러오지 못했습니다.'));
     });
   } finally { db.close(); }
 }
-export async function saveDraft(content: Content): Promise<void> {
+export async function saveDraft(content: Content, key = 'current'): Promise<void> {
   const data = validateContent(content), db = await openDB();
   try {
     await new Promise<void>((resolve, reject) => {
       const transaction = db.transaction(STORE, 'readwrite');
-      transaction.objectStore(STORE).put(data, 'current');
+      transaction.objectStore(STORE).put(data, key);
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(new Error('저장 공간이 부족하거나 임시 저장이 차단되어 있습니다. 배포 파일을 내려받아 보관해주세요.'));
       transaction.onabort = () => reject(new Error('임시 저장이 완료되지 않았습니다.'));

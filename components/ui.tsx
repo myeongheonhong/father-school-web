@@ -11,12 +11,13 @@ const paths: Record<string, React.ReactNode> = {
   pin: <><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z" /><circle cx="12" cy="10" r="2.3" /></>,
   clock: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
   book: <path d="M12 5v16M12 5C8 2 3 3 3 3v16s5-1 9 2c4-3 9-2 9-2V3s-5-1-9 2Z" />,
+  bookmark: <path d="M6 3h12v18l-6-4-6 4V3Z" />,
   check: <path d="m5 12 4 4L19 6" />,
   search: <><circle cx="10" cy="10" r="6" /><path d="m15 15 6 6" /></>,
 };
 export function Icon({ name }: { name: string }) { return <svg viewBox="0 0 24 24" aria-hidden="true">{paths[name] ?? paths.book}</svg>; }
-export function Header({ variant, admin = false }: { variant: string; admin?: boolean }) {
-  return <header className="brand-header"><div className="brand-line"><span className="brand-cross"><Icon name="cross" /></span><span>2026 옥인교회</span><span className="term-label">{admin ? '안내 관리' : '10.25 — 11.08'}</span></div><div className="brand-title">아버지<span>기도학교</span></div>{variant === 'B' && !admin && <p className="brand-subtitle">기도하는 아버지, 함께 세워가는 가정</p>}</header>;
+export function Header({ variant, admin = false, edition }: { variant: string; admin?: boolean; edition?: string }) {
+  return <header className="brand-header"><div className="brand-line"><span className="brand-cross"><Icon name="cross" /></span><span>2026 옥인교회</span><span className="term-label">{edition && <b className="edition-label">{edition}</b>}{admin ? '안내 관리' : '10.25 — 11.08'}</span></div><div className="brand-title">아버지<span>기도학교</span></div>{variant === 'B' && !admin && <p className="brand-subtitle">기도하는 아버지, 함께 세워가는 가정</p>}</header>;
 }
 export function Tabs({ value, onChange, disabled = false }: { value: Category; onChange: (value: Category) => void; disabled?: boolean }) {
   function keydown(e: KeyboardEvent<HTMLButtonElement>, index: number) {
