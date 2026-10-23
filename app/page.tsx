@@ -1,0 +1,15 @@
+import Link from 'next/link';
+import published from '@/public/content.json';
+import Participant from '@/components/Participant';
+import { Header, Icon } from '@/components/ui';
+import { validateContent, variants, posterPath } from '@/lib/content';
+const directions = {
+  A: { name: '한눈에 보는 안내', description: '바로 펼쳐지는 주차 이미지. 익숙한 탭과 간결한 화면으로 안내에 집중합니다.', tag: '가장 간결한 구성', detail: '이미지 중심 · 빠른 확인' },
+  B: { name: '말씀이 먼저 보이는 안내', description: '이번 주 제목과 말씀, 강사를 먼저 확인합니다. 짙은 남색으로 중심을 잡았습니다.', tag: '내용을 먼저 확인', detail: '제목 중심 · 또렷한 구분' },
+  C: { name: '주보를 닮은 안내', description: '따뜻한 종이색과 금빛 선, 여백을 담았습니다. 익숙한 주보처럼 차분하게 읽습니다.', tag: '따뜻하고 차분한 구성', detail: '주보 스타일 · 편안한 읽기' },
+};
+export default function Home() {
+  const data = validateContent(published);
+  if (data.defaultVariant) return <Participant variant={data.defaultVariant} initialData={data} />;
+  return <div className="comparison"><header className="comparison-top"><span><Icon name="cross" />옥인교회 · 2026</span><Link href="/admin/">안내 관리 <Icon name="arrow" /></Link></header><main id="content"><div className="comparison-intro"><p className="eyebrow">아버지기도학교 · 디자인 비교</p><h1>같은 안내,<br />세 가지 모습.</h1><p>원하시는 화면을 열어 직접 사용해보세요.<br />1–3주차 안내와 조편성을 모두 확인할 수 있습니다.</p></div><div className="direction-grid">{variants.map(v => <article className={`direction direction-${v.toLowerCase()}`} key={v}><div className="direction-top"><span className="direction-letter">{v}</span><span>{directions[v].tag}</span></div><Link href={`/${v}/`} className="direction-preview" aria-label={`${v}안 ${directions[v].name} 열기`}><div className="mini-app" data-theme={v.toLowerCase()}><Header variant={v} /><div className="mini-tabs"><b>1주차</b><span>2주차</span><span>3주차</span><span>조편성</span></div>{v === 'B' && <div className="mini-summary">기도는 축복입니다.<small>마태복음 6:9, 7:9–11</small></div>}{v === 'C' && <div className="mini-paper"><span>01</span>10월 25일 (주일)</div>}<img src={posterPath(data.weeks[0].poster)} width={887} height={1774} alt="1주차 안내 이미지 미리보기" /></div></Link><div className="direction-copy"><p className="eyebrow">{directions[v].detail}</p><h2>{directions[v].name}</h2><p>{directions[v].description}</p><Link className="direction-open" href={`/${v}/`}>{v}안 사용해보기 <Icon name="arrow" /></Link><Link className="direction-admin" href={`/${v}/admin/`}>{v}안 관리자 보기</Link></div></article>)}</div><div className="comparison-note"><Icon name="book" /><p>안내 내용은 세 화면이 함께 사용합니다.<br />디자인을 고르면 지금 주소에서 선택한 화면이 바로 열리도록 바꿀 수 있습니다.</p></div></main><footer className="comparison-footer">2026 옥인교회 아버지기도학교</footer></div>;
+}
