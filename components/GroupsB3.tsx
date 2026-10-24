@@ -12,7 +12,7 @@ function Highlight({ name, search }: { name: string; search: string }) {
 }
 
 function ContactCard({ group, search }: { group: Group; search: string }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const people = groupContacts(group);
   const members = people.filter(person => !person.leader);
   return <article className="b3-contact-card b3-roster-card" aria-labelledby={`b3-title-${group.id}`}>
@@ -54,16 +54,16 @@ export default function GroupsB3({ data }: { data: Content }) {
   function closeSearch() { setSearch(''); setSearchOpen(false); trigger.current?.focus(); }
 
   return <div className="b3-groups">
-    <section className="b3-group-intro"><div className="b3-intro-heading"><span className="b3-section-label"><Icon name="people" />함께하는 기도</span><span>{data.groups.length}개 조 · {total}명</span></div><h1>조편성 안내</h1><p>이름은 한눈에, 연락처는 필요할 때 확인하세요.</p><div className="b3-meeting"><Icon name="pin" /><strong>조별 나눔 · 식사 {data.groupPlace}</strong></div>{data.groupNotice && <p className="b3-meeting-note">{data.groupNotice}</p>}</section>
+    <section className="b3-group-intro"><div className="b3-intro-heading"><span className="b3-section-label"><Icon name="people" />함께하는 기도</span><span>{data.groups.length}개 조 · {total}명</span></div><h1>조편성 안내</h1><p>이름과 연락처를 한눈에 확인하세요.</p><div className="b3-meeting"><Icon name="pin" /><strong>조별 나눔 · 식사 {data.groupPlace}</strong></div>{data.groupNotice && <p className="b3-meeting-note">{data.groupNotice}</p>}</section>
     <div className="b3-group-filter" ref={filter} role="group" aria-label="조 선택">
       <button className="b3-filter-all" aria-pressed={selected === 'all'} aria-controls="b3-group-results" onClick={() => selectGroup('all')}><Icon name="list" /><strong>전체</strong><small>{total}명</small></button>
       {data.groups.map(group => <button key={group.id} aria-pressed={selected === group.id} aria-controls="b3-group-results" onClick={() => selectGroup(group.id)}>{group.name}</button>)}
     </div>
-    <div className="b3-roster-toolbar"><div><h2>{query ? '이름 검색 결과' : selected === 'all' ? '전체 명단' : `${selectedName} 명단`}</h2><p role="status" aria-live="polite" aria-atomic="true">{query ? `전체에서 ${visible.length}개 조${found ? ` · ${found}명` : ''}을 찾았어요` : selected === 'all' ? `${data.groups.length}개 조를 모두 보고 있어요` : '필요하면 연락처 보기를 눌러주세요'}</p></div><button ref={trigger} onClick={() => searchOpen ? closeSearch() : setSearchOpen(true)} aria-expanded={searchOpen} aria-controls="b3-search-panel"><Icon name={searchOpen ? 'close' : 'search'} />{searchOpen ? '닫기' : '이름 찾기'}</button></div>
+    <div className="b3-roster-toolbar"><div><h2>{query ? '이름 검색 결과' : selected === 'all' ? '전체 명단' : `${selectedName} 명단`}</h2><p role="status" aria-live="polite" aria-atomic="true">{query ? `전체에서 ${visible.length}개 조${found ? ` · ${found}명` : ''}을 찾았어요` : selected === 'all' ? `${data.groups.length}개 조를 모두 보고 있어요` : '번호를 누르면 전화로 연결돼요'}</p></div><button ref={trigger} onClick={() => searchOpen ? closeSearch() : setSearchOpen(true)} aria-expanded={searchOpen} aria-controls="b3-search-panel"><Icon name={searchOpen ? 'close' : 'search'} />{searchOpen ? '닫기' : '이름 찾기'}</button></div>
     {searchOpen && <div className="b3-search-panel" id="b3-search-panel"><label htmlFor="b3-name-search">어느 조에 계신가요?</label><div className="b2-search"><Icon name="search" /><input id="b3-name-search" ref={input} type="search" value={search} onChange={e => { setSearch(e.target.value); setSelected('all'); }} placeholder="전체 명단에서 이름으로 찾기" autoComplete="off" spellCheck={false} maxLength={100} enterKeyHint="search" aria-controls="b3-group-results" onKeyDown={e => { if (e.key === 'Escape') closeSearch(); }} />{search && <button aria-label="검색어 지우기" onClick={() => { setSearch(''); input.current?.focus(); }}><Icon name="close" /></button>}</div></div>}
     <div className="b3-roster-results" id="b3-group-results" key={`${selected}-${query}`}>
       {visible.length ? visible.map(group => <ContactCard key={group.id} group={group} search={search} />) : <div className="b2-no-results"><span><Icon name="search" /></span><h2>{data.groups.length ? '일치하는 이름이 없어요' : '조편성을 준비하고 있어요'}</h2><p>{data.groups.length ? '이름을 다시 확인하거나 전체 명단을 살펴보세요.' : '명단이 확정되면 여기서 확인할 수 있습니다.'}</p>{data.groups.length > 0 && <button onClick={() => { selectGroup('all'); trigger.current?.focus(); }}>전체 명단 보기</button>}</div>}
     </div>
-    <p className="b3-roster-help"><Icon name="phone" />연락처를 펼친 뒤 번호를 누르면 전화로 연결됩니다.</p>
+    <p className="b3-roster-help"><Icon name="phone" />전화번호를 누르면 전화 화면으로 연결됩니다.</p>
   </div>;
 }

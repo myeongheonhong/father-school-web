@@ -84,7 +84,7 @@
 @media(hover:hover){.b3-contact-list>li>a:hover{color:#0d355f;background:#edf3fa}.b3-group-filter>button:not([aria-pressed=true]):hover{background:#eaf0f7;border-color:#afc1d7}.b3-roster-toolbar>button:hover{background:#eaf0f7}.b3-app .view-tools button:hover{border-color:#a1b5cd}}
 @media(max-width:350px){.b3-groups{padding-left:14px;padding-right:14px}.b3-group-filter{gap:4px}.b3-group-filter>button{font-size:13px}.b3-contact-card>header{padding-left:14px;padding-right:14px}.b3-contact-list{padding-left:7px;padding-right:7px}.b3-contact-labels{padding-left:14px;padding-right:14px}.b3-contact-name{gap:5px}.b3-contact-name strong{font-size:16px}.b3-contact-list>li>a{gap:4px}.b3-contact-list>li>a>span{font-size:15px}.b3-contact-list>li>a>svg{width:13px;height:13px}.b3-tabs #tab-groups svg{display:none}}
 @media(prefers-reduced-motion:reduce){.b3-app *,.b3-app *:before,.b3-app *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
-/* Names stay visible; phone details expand only when requested. */
+/* Names stay visible; phone details start open and can be collapsed. */
 .b3-roster-card>header{padding:17px;gap:12px;background:#fff;border-bottom:1px solid #edf0f4}
 .b3-roster-card>header h2{display:grid;place-items:center;min-width:53px;min-height:49px;max-width:40%;padding:8px 9px;background:#183b65;color:#fff;border-radius:10px;font-size:22px;overflow-wrap:anywhere}
 .b3-card-leader{display:flex;flex-direction:column;gap:2px;min-width:0}
