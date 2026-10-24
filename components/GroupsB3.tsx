@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import type { Content, Group } from '@/lib/content';
 import { groupContacts, formatPhone, phoneHref } from '@/lib/contacts';
 import { groupPeople, matchesGroup, matchingPeople, normalizeSearch } from '@/lib/groups';
@@ -22,7 +22,7 @@ function ContactCard({ group, search, expanded, onToggle, cardRef }: { group: Gr
     <div className="b3-contact-collapse" data-open={expanded} id={`b3-contacts-${group.id}`} aria-hidden={!expanded} inert={!expanded}><div>
     <div className="b3-contact-labels" aria-hidden="true"><span>이름</span><span>연락처</span></div>
     <ul className="b3-contact-list" aria-label={`${group.name} 연락처 명단`}>
-      {people.map(person => <li key={person.name} className={person.leader ? 'is-leader' : ''}>
+      {people.map((person, index) => <li key={person.name} className={person.leader ? 'is-leader' : ''} style={{ '--contact-order': Math.min(index, 5) } as CSSProperties}>
         <div className="b3-contact-name"><span>{person.leader ? '조장' : '조원'}</span><strong><Highlight name={person.name} search={search} /></strong></div>
         {phoneHref(person.phone) ? <a href={phoneHref(person.phone)} aria-label={`${person.name}님에게 전화 ${formatPhone(person.phone)}`}><span>{formatPhone(person.phone)}</span><Icon name="phone" /></a> : <span className="b3-phone-empty">등록 예정</span>}
       </li>)}
