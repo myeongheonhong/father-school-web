@@ -46,7 +46,7 @@
 .b3-search-panel .b2-search{min-height:54px}
 .b3-search-panel .b2-search input{font-size:16px;min-height:52px}
 .b3-search-panel .b2-search input::placeholder{font-size:14px}
-.b3-roster-results{display:grid;gap:17px;animation:b3-roster-in 200ms ease}
+.b3-roster-results{display:grid;gap:17px;animation:b3-roster-in 200ms ease;overflow-anchor:none}
 @keyframes b3-roster-in{from{opacity:.3;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .b3-contact-card{border:1px solid #d9e1eb;background:#fff;border-radius:15px;overflow:hidden;box-shadow:0 4px 15px #102f5605}
 .b3-contact-card>header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 17px;background:#183b63;color:#fff}
@@ -84,7 +84,7 @@
 @media(hover:hover){.b3-contact-list>li>a:hover{color:#0d355f;background:#edf3fa}.b3-group-filter>button:not([aria-pressed=true]):hover{background:#eaf0f7;border-color:#afc1d7}.b3-roster-toolbar>button:hover{background:#eaf0f7}.b3-app .view-tools button:hover{border-color:#a1b5cd}}
 @media(max-width:350px){.b3-groups{padding-left:14px;padding-right:14px}.b3-group-filter{gap:4px}.b3-group-filter>button{font-size:13px}.b3-contact-card>header{padding-left:14px;padding-right:14px}.b3-contact-list{padding-left:7px;padding-right:7px}.b3-contact-labels{padding-left:14px;padding-right:14px}.b3-contact-name{gap:5px}.b3-contact-name strong{font-size:16px}.b3-contact-list>li>a{gap:4px}.b3-contact-list>li>a>span{font-size:15px}.b3-contact-list>li>a>svg{width:13px;height:13px}.b3-tabs #tab-groups svg{display:none}}
 @media(prefers-reduced-motion:reduce){.b3-app *,.b3-app *:before,.b3-app *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
-/* Names stay visible; phone details start open and can be collapsed. */
+/* Names stay visible; the group being read reveals its phone details. */
 .b3-roster-card>header{padding:17px;gap:12px;background:#fff;border-bottom:1px solid #edf0f4}
 .b3-roster-card>header h2{display:grid;place-items:center;min-width:53px;min-height:49px;max-width:40%;padding:8px 9px;background:#183b65;color:#fff;border-radius:10px;font-size:22px;overflow-wrap:anywhere}
 .b3-card-leader{display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -105,5 +105,12 @@
 .b3-contact-collapse[data-open=true]{grid-template-rows:1fr;opacity:1}
 .b3-contact-collapse>div{min-height:0;overflow:hidden;visibility:hidden;transition:visibility 0s linear 260ms}
 .b3-contact-collapse[data-open=true]>div{visibility:visible;transition-delay:0s}
+.b3-roster-card{transition:border-color 180ms ease,box-shadow 180ms ease}
+.b3-roster-card[data-reading=true]{border-color:#c7b68e;box-shadow:0 4px 18px #102f560a}
+/* Automatic changes preserve the reading position instead of animating height above it. */
+.b3-roster-results[data-auto-switch=true] .b3-contact-collapse{transition:opacity 180ms ease}
+.b3-roster-results[data-auto-switch=true] .b3-contact-collapse>div{transition:none}
+.b3-roster-results[data-auto-switch=true] .b3-contact-collapse[data-open=true] .b3-contact-list{animation:b3-contact-reveal 180ms ease}
+@keyframes b3-contact-reveal{from{opacity:.25;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 @media(hover:hover){.b3-contact-toggle:hover{background:#f1f5fa;color:#244b75}}
 @media(max-width:350px){.b3-roster-card>header{padding:14px;gap:9px}.b3-roster-card>header h2{min-width:49px;font-size:21px}.b3-card-leader>strong{font-size:18px}.b3-roster-card>header>.b3-card-count{font-size:11px;padding:4px 6px}.b3-card-count svg{display:none}.b3-member-summary{padding-left:14px;padding-right:14px}}
