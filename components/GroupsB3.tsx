@@ -55,7 +55,7 @@ export default function GroupsB3({ data }: { data: Content }) {
   function closeSearch() { setSearch(''); setSearchOpen(false); trigger.current?.focus(); }
 
   return <div className="b3-groups">
-    <section className="b3-group-intro"><div className="b3-intro-heading"><span className="b3-section-label"><Icon name="people" />함께하는 기도</span><span>{data.groups.length}개 조 · {total}명</span></div><h1>조편성 안내</h1><p>스크롤하면 보고 있는 조의 연락처가 열려요.</p><div className="b3-meeting"><Icon name="pin" /><strong>조별 나눔 · 식사 {data.groupPlace}</strong></div>{data.groupNotice && <p className="b3-meeting-note">{data.groupNotice}</p>}</section>
+    <section className="b3-group-intro"><span className="b3-section-label"><Icon name="people" />함께하는 기도</span><h1>조편성 안내</h1></section>
     <div className="b3-group-filter" ref={filter} role="group" aria-label="조 선택">
       <button className="b3-filter-all" aria-pressed={selected === 'all'} aria-controls="b3-group-results" onClick={() => selectGroup('all')}><Icon name="list" /><strong>전체</strong><small>{total}명</small></button>
       {data.groups.map(group => <button key={group.id} aria-pressed={selected === group.id} aria-controls="b3-group-results" onClick={() => selectGroup(group.id)}>{group.name}</button>)}

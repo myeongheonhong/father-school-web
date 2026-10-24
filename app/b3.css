@@ -12,23 +12,15 @@
 .b3-app[data-theme=b] .b3-tabs #tab-groups[aria-selected=true]{color:#403319;box-shadow:none}
 .b3-tabs #tab-groups svg{width:16px;height:16px;stroke-width:1.8}
 .b3-app button:active{transform:scale(.97)}
-.b3-app .view-tools button,.b3-app .group-shortcut{transition:background-color 180ms ease,border-color 180ms ease,transform 140ms ease}
-.b3-app .group-shortcut{background:#fff9ed;border-color:#e7d8b6}
-.b3-app .group-shortcut .shortcut-icon{background:#f3e4c5;color:#8a6321}
+.b3-app .view-tools button{transition:background-color 180ms ease,border-color 180ms ease,transform 140ms ease}
 .b3-panel{animation:b3-panel-in 280ms cubic-bezier(.22,1,.36,1)}
 .b3-panel[data-direction=backward]{animation-name:b3-panel-back}
 @keyframes b3-panel-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
 @keyframes b3-panel-back{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
 .b3-groups{padding:22px 18px 0}
-.b3-intro-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#7a8797;font-size:12px}
-.b3-section-label{display:flex;align-items:center;gap:5px;color:#8a6729;font-weight:650}
+.b3-section-label{display:flex;align-items:center;gap:5px;color:#8a6729;font-size:12px;font-weight:650}
 .b3-section-label svg{width:15px;height:15px}
 .b3-group-intro h1{font-size:27px;letter-spacing:-.06em;line-height:1.4;margin-top:8px;color:#102f56}
-.b3-group-intro>p{font-size:14px;color:#65758a;margin-top:6px;word-break:keep-all}
-.b3-meeting{display:inline-flex;align-items:center;gap:6px;margin-top:13px;padding:7px 11px;border-radius:7px;background:#f5ecda;color:#795e2b;font-size:13px}
-.b3-meeting svg{width:15px;height:15px}
-.b3-meeting strong{font-weight:600}
-.b3-group-intro>.b3-meeting-note{font-size:11px;color:#8a7a5c;margin-top:6px;white-space:pre-line;line-height:1.6}
 .b3-group-filter{position:sticky;top:var(--b3-nav-height);z-index:15;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;padding:13px 0 12px;margin-top:6px;background:var(--canvas);border-bottom:1px solid #e0e5ec;scroll-margin-top:var(--b3-nav-height)}
 .b3-group-filter>button{min-height:44px;min-width:0;display:flex;align-items:center;justify-content:center;border:1px solid #dce3ec;background:#fff;border-radius:9px;color:#576b82;font-size:14px;font-weight:600;transition:background-color 180ms ease,color 180ms ease,border-color 180ms ease,box-shadow 180ms ease,transform 140ms ease}
 .b3-group-filter>button[aria-pressed=true]{background:#173a62;border-color:#173a62;color:#fff;box-shadow:0 3px 8px #102f5614}

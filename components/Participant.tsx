@@ -17,13 +17,12 @@ function Reader({ week: w, number, notice }: { week: Week; number: number; notic
 }
 function Viewer({ week, number, onClose }: { week: Week; number: number; onClose: () => void }) {
   const ref = useRef<HTMLDialogElement>(null);
-  const [zoom, setZoom] = useState(false);
   useEffect(() => {
     const dialog = ref.current;
     dialog?.showModal(); document.body.classList.add('dialog-open');
     return () => { dialog?.close(); document.body.classList.remove('dialog-open'); };
   }, []);
-  return <dialog ref={ref} aria-labelledby="viewer-heading" onCancel={onClose} onClose={onClose}><div className="viewer-toolbar"><h2 id="viewer-heading">{number}주차 안내</h2><button onClick={() => setZoom(!zoom)} aria-pressed={zoom}>{zoom ? '화면에 맞추기' : '두 배로 확대'}</button><button className="close-viewer" onClick={onClose} aria-label="이미지 닫기" autoFocus><Icon name="close" /></button></div><div className={`viewer-scroll ${zoom ? 'zoomed' : ''}`}><img src={posterPath(week.poster)} alt={`${number}주차 안내 원본`} /></div><p className="viewer-hint">{zoom ? '좌우·위아래로 움직여 읽어보세요.' : '두 배로 확대하거나 휴대폰의 확대 기능을 사용하세요.'}</p></dialog>;
+  return <dialog ref={ref} aria-labelledby="viewer-heading" onCancel={onClose} onClose={onClose}><div className="viewer-toolbar"><h2 id="viewer-heading">{number}주차 안내</h2><button className="close-viewer" onClick={onClose} aria-label="이미지 닫기" autoFocus><Icon name="close" /></button></div><div className="viewer-scroll"><img src={posterPath(week.poster)} alt={`${number}주차 안내 원본`} /></div></dialog>;
 }
 function Groups({ data }: { data: Content }) {
   const [search, setSearch] = useState('');
@@ -71,7 +70,7 @@ export default function Participant({ variant, initialData, edition }: { variant
     window.scrollTo({ top: 0, behavior: enhanced && !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'instant' });
   }
   const number = Number(category) || 1, week = data.weeks[number - 1];
-  const panel = category === 'groups' ? (enhanced ? <GroupsB3 data={data} /> : edition ? <GroupsB2 data={data} /> : <Groups data={data} />) : <div className="week-content"><Summary week={week} number={number} variant={variant} /><div className="view-tools"><button onClick={() => setReading(!reading)} aria-pressed={reading}><Icon name="book" />{reading ? '이미지로 보기' : '글자로 읽기'}</button><button onClick={() => setViewer(true)}><Icon name="expand" />크게 보기</button></div>{reading ? <Reader week={week} number={number} notice={data.groupNotice} /> : <><button className="poster-button" onClick={() => setViewer(true)} aria-label={`${number}주차 안내 이미지 확대`}><img className="week-poster" src={posterPath(week.poster)} alt={`${number}주차 안내. ${week.date} ${week.time}, ${week.title}, ${week.speaker}. 예배 순서와 나눔 질문은 글자로 읽기에서 확인하세요.`} width={887} height={1774} fetchPriority="high" /></button><p className="image-hint"><Icon name="expand" />이미지를 누르면 확대해서 볼 수 있어요.</p></>}<button className="group-shortcut" onClick={() => changeTab('groups')}><span className="shortcut-icon"><Icon name="people" /></span><span><strong>조편성 확인하기</strong><small>조별 나눔 · 식사 {data.groupPlace}</small></span><Icon name="arrow" /></button></div>;
+  const panel = category === 'groups' ? (enhanced ? <GroupsB3 data={data} /> : edition ? <GroupsB2 data={data} /> : <Groups data={data} />) : <div className="week-content"><Summary week={week} number={number} variant={variant} /><div className="view-tools"><button onClick={() => setReading(!reading)} aria-pressed={reading}><Icon name="book" />{reading ? '이미지로 보기' : '글자로 읽기'}</button><button onClick={() => setViewer(true)}><Icon name="expand" />크게 보기</button></div>{reading ? <Reader week={week} number={number} notice={data.groupNotice} /> : <button className="poster-button" onClick={() => setViewer(true)} aria-label={`${number}주차 안내 이미지 확대`}><img className="week-poster" src={posterPath(week.poster)} alt={`${number}주차 안내. ${week.date} ${week.time}, ${week.title}, ${week.speaker}. 예배 순서와 나눔 질문은 글자로 읽기에서 확인하세요.`} width={887} height={1774} fetchPriority="high" /></button>}</div>;
   return <div className={`app-shell ${edition ? 'b2-app' : ''} ${enhanced ? 'b3-app' : ''}`} data-theme={variant.toLowerCase()}>
     {preview && <aside className="preview-banner" role="status">{preview}<Link href={`/${edition ?? variant}/admin/`}>관리자로 돌아가기 →</Link></aside>}
     <Header variant={variant} edition={edition} /><Tabs value={category} onChange={changeTab} enhanced={enhanced} />
