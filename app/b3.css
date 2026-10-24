@@ -1,5 +1,6 @@
 /* B3: the accepted B2 foundation, with contact rows and clearer navigation. */
 .b3-app{--b3-gold:#e9ca87;--b3-nav-height:70px;overflow-x:clip}
+.b3-app[data-theme=b] .brand-header{border-top:0}
 .b3-app .brand-logo{width:20px;height:20px;flex-shrink:0;overflow:hidden;border-radius:5px;background:#fff;box-shadow:0 0 0 1px #ffffff14}
 .b3-app .brand-logo img{display:block;width:100%;height:100%;object-fit:contain}
 .b3-app[data-theme=b] .b3-tabs{padding:0 14px 12px;box-shadow:0 4px 14px #102f5610}
@@ -40,8 +41,7 @@
 .b3-search-panel .b2-search{min-height:54px}
 .b3-search-panel .b2-search input{font-size:16px;min-height:52px}
 .b3-search-panel .b2-search input::placeholder{font-size:14px}
-.b3-roster-results{display:grid;gap:17px;animation:b3-roster-in 200ms ease;overflow-anchor:none}
-@keyframes b3-roster-in{from{opacity:.3;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.b3-roster-results{display:grid;gap:17px;overflow-anchor:none}
 .b3-contact-card{border:1px solid #d9e1eb;background:#fff;border-radius:15px;overflow:hidden;box-shadow:0 4px 15px #102f5605}
 .b3-contact-card>header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 17px;background:#183b63;color:#fff}
 .b3-contact-card>header h2{font-size:21px;line-height:1.35;font-weight:700;letter-spacing:-.035em}
@@ -92,18 +92,14 @@
 .b3-contact-toggle{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:46px;padding:10px 17px;border-top:1px solid #edf0f4;color:#61758e;font-size:13px;font-weight:550;text-align:left;transition:background-color 180ms ease,color 180ms ease}
 .b3-contact-toggle>span{display:flex;align-items:center;gap:7px}
 .b3-contact-toggle svg{width:15px;height:15px}
-.b3-contact-toggle>svg{transition:transform 380ms cubic-bezier(.22,1,.36,1)}
+.b3-contact-toggle>svg{transition:transform 260ms cubic-bezier(.22,1,.36,1)}
 .b3-contact-toggle[aria-expanded=true]{background:#eff3f8;color:#294c73}
 .b3-contact-toggle[aria-expanded=true]>svg{transform:rotate(180deg)}
-.b3-contact-collapse{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows 440ms cubic-bezier(.4,0,.2,1),opacity 360ms ease}
+.b3-contact-collapse{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows 300ms cubic-bezier(.22,1,.36,1),opacity 180ms ease-out}
 .b3-contact-collapse[data-open=true]{grid-template-rows:1fr;opacity:1}
-.b3-contact-collapse>div{min-height:0;overflow:hidden;visibility:hidden;transition:visibility 0s linear 440ms}
+.b3-contact-collapse>div{min-height:0;overflow:hidden;visibility:hidden;contain:layout paint;transition:visibility 0s linear 300ms}
 .b3-contact-collapse[data-open=true]>div{visibility:visible;transition-delay:0s}
-.b3-roster-card{transition:border-color 320ms ease,box-shadow 320ms ease}
+.b3-roster-card{transition:border-color 200ms ease}
 .b3-roster-card[data-reading=true]{border-color:#c7b68e;box-shadow:0 4px 18px #102f560a}
-.b3-contact-collapse[data-open=true] .b3-contact-list{animation:b3-contact-reveal 460ms cubic-bezier(.22,1,.36,1) both}
-.b3-contact-collapse[data-open=true] .b3-contact-list>li{animation:b3-contact-row 320ms cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--contact-order,0)*28ms)}
-@keyframes b3-contact-reveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes b3-contact-row{from{opacity:.3;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
 @media(hover:hover){.b3-contact-toggle:hover{background:#f1f5fa;color:#244b75}}
 @media(max-width:350px){.b3-roster-card>header{padding:14px;gap:9px}.b3-roster-card>header h2{min-width:49px;font-size:21px}.b3-card-leader>strong{font-size:18px}.b3-roster-card>header>.b3-card-count{font-size:11px;padding:4px 6px}.b3-card-count svg{display:none}.b3-member-summary{padding-left:14px;padding-right:14px}}

@@ -1,18 +1,18 @@
 'use client';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { readingGroup, type ReadingAnchor, type ReadingPosition } from '@/lib/reading-group';
+import { trackContactMotion, type ContactMotion } from '@/lib/contact-motion';
 
 export function useScrollContacts(ids: string[], filter: RefObject<HTMLDivElement | null>) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const elements = useRef(new Map<string, HTMLElement>());
   const current = useRef<string | null>(null);
   const lastScroll = useRef(0);
-  const motion = useRef<{
-    element: HTMLElement; documentTop: number; compensate: boolean; panels: HTMLElement[];
-  } | null>(null);
+  const motion = useRef<ContactMotion | null>(null);
   const animating = useRef(false);
+  const scrolling = useRef(false);
   const scheduleUpdate = useRef<() => void>(() => {});
-  const captureScroll = useRef<() => void>(() => {});
+  const finishMotion = useRef<() => void>(() => {});
   const manual = useRef<{ candidate: string | null } | null>(null);
   const signature = JSON.stringify(ids);
 
@@ -42,8 +42,9 @@ export function useScrollContacts(ids: string[], filter: RefObject<HTMLDivElemen
     const compensate = auto || !!(current.current && id);
     const element = elements.current.get(id ?? current.current ?? '');
     const panels = [current.current, id].flatMap(cardId => {
-      const panel = cardId ? elements.current.get(cardId)?.querySelector<HTMLElement>('.b3-contact-collapse') : null;
-      return panel ? [panel] : [];
+      const card = cardId ? elements.current.get(cardId) : undefined;
+      const panel = card?.querySelector<HTMLElement>('.b3-contact-collapse');
+      return panel ? [{ element: panel, above: !!(card && element && card !== element && (card.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING)) }] : [];
     });
     motion.current = element ? {
       element, documentTop: element.getBoundingClientRect().top + window.scrollY, compensate, panels,
@@ -56,34 +57,18 @@ export function useScrollContacts(ids: string[], filter: RefObject<HTMLDivElemen
     const pending = motion.current;
     motion.current = null;
     if (!pending) return;
-    let frame = 0;
     animating.current = true;
-
-    const followMotion = () => {
-      if (!pending.element.isConnected) {
-        animating.current = false;
-        return;
-      }
-      // Preserve genuine scrolling, then compensate only for the changing height above this card.
-      captureScroll.current();
-      const documentTop = pending.element.getBoundingClientRect().top + window.scrollY;
-      const shift = documentTop - pending.documentTop;
-      pending.documentTop = documentTop;
-      if (pending.compensate && Math.abs(shift) > .01) {
-        window.scrollBy({ top: shift, behavior: 'instant' });
-        lastScroll.current = window.scrollY;
-      }
-      // Use the actual CSS transition lifetime, including reversals and reduced-motion settings.
-      const moving = pending.panels.some(panel => panel.getAnimations().some(animation => animation.pending || animation.playState === 'running'));
-      if (moving) frame = requestAnimationFrame(followMotion);
-      else {
-        animating.current = false;
-        scheduleUpdate.current();
-      }
-    };
-    followMotion();
+    const controller = trackContactMotion(pending, delta => {
+      window.scrollBy({ top: delta, behavior: 'instant' });
+      lastScroll.current = window.scrollY;
+    }, () => {
+      animating.current = false;
+      scheduleUpdate.current();
+    });
+    finishMotion.current = controller.finish;
     return () => {
-      cancelAnimationFrame(frame);
+      controller.cancel();
+      finishMotion.current = () => {};
       animating.current = false;
     };
   }, [expandedId]);
@@ -91,17 +76,19 @@ export function useScrollContacts(ids: string[], filter: RefObject<HTMLDivElemen
   useEffect(() => {
     const orderedIds: string[] = JSON.parse(signature);
     let frame = 0;
+    let idle = 0;
     let direction: -1 | 0 | 1 = 0;
     manual.current = null;
     motion.current = null;
     current.current = null;
     setExpandedId(null);
+    scrolling.current = false;
     lastScroll.current = window.scrollY;
 
     function update() {
       frame = 0;
-      // Re-evaluate once the cards settle; intermediate heights must not switch the active group.
-      if (animating.current) return;
+      // Keep native scrolling free of layout changes; reveal contacts once the reader pauses.
+      if (animating.current || scrolling.current) return;
       const focused = document.activeElement;
       if (focused?.matches(':focus-visible') && focused.closest('.b3-contact-collapse[data-open=true]')) return;
       const { anchors, position } = measure(orderedIds, direction);
@@ -120,28 +107,44 @@ export function useScrollContacts(ids: string[], filter: RefObject<HTMLDivElemen
       if (Math.abs(delta) < .5) return;
       direction = delta > 0 ? 1 : -1;
       lastScroll.current = window.scrollY;
-      schedule();
+      scrolling.current = true;
+      window.clearTimeout(idle);
+      finishMotion.current();
+      idle = window.setTimeout(() => { scrolling.current = false; schedule(); }, 120);
     }
-    function resize() { direction = 0; schedule(); }
+    function interrupt() { finishMotion.current(); }
+    function keydown(event: KeyboardEvent) {
+      if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) interrupt();
+    }
+    function resize() { finishMotion.current(); direction = 0; schedule(); }
     scheduleUpdate.current = schedule;
-    captureScroll.current = scroll;
     window.addEventListener('scroll', scroll, { passive: true });
     window.addEventListener('resize', resize);
+    window.addEventListener('wheel', interrupt, { passive: true });
+    window.addEventListener('pointerdown', interrupt, { passive: true });
+    window.addEventListener('touchstart', interrupt, { passive: true });
+    window.addEventListener('keydown', keydown);
     schedule();
     return () => {
       cancelAnimationFrame(frame);
+      window.clearTimeout(idle);
       window.removeEventListener('scroll', scroll);
       window.removeEventListener('resize', resize);
+      window.removeEventListener('wheel', interrupt);
+      window.removeEventListener('pointerdown', interrupt);
+      window.removeEventListener('touchstart', interrupt);
+      window.removeEventListener('keydown', keydown);
       scheduleUpdate.current = () => {};
-      captureScroll.current = () => {};
     };
   }, [signature, measure, change]);
 
-  function toggle(id: string) {
-    const { anchors, position } = measure(ids, 0);
-    manual.current = { candidate: ids.length === 1 ? ids[0] : readingGroup(anchors, { ...position, current: null }) };
+  const toggle = useCallback((id: string) => {
+    finishMotion.current();
+    const orderedIds: string[] = JSON.parse(signature);
+    const { anchors, position } = measure(orderedIds, 0);
+    manual.current = { candidate: orderedIds.length === 1 ? orderedIds[0] : readingGroup(anchors, { ...position, current: null }) };
     change(current.current === id ? null : id, false);
-  }
+  }, [signature, measure, change]);
 
   return { expandedId, register, toggle };
 }

@@ -21,7 +21,7 @@ const paths: Record<string, React.ReactNode> = {
 };
 export function Icon({ name }: { name: string }) { return <svg viewBox="0 0 24 24" aria-hidden="true">{paths[name] ?? paths.book}</svg>; }
 export function Header({ variant, admin = false, edition }: { variant: string; admin?: boolean; edition?: string }) {
-  return <header className="brand-header"><div className="brand-line"><span className={`brand-cross${edition === 'B3' ? ' brand-logo' : ''}`}>{edition === 'B3' ? <img src={sitePath('/brand/okin-logo.png')} width={20} height={20} alt="" /> : <Icon name="cross" />}</span><span>2026 옥인교회</span><span className="term-label">{edition && <b className="edition-label">{edition}</b>}{admin ? '안내 관리' : '10.25 — 11.08'}</span></div><div className="brand-title">아버지<span>기도학교</span></div>{variant === 'B' && !admin && <p className="brand-subtitle">기도하는 아버지, 함께 세워가는 가정</p>}</header>;
+  return <header className="brand-header"><div className="brand-line"><span className={`brand-cross${edition === 'B3' ? ' brand-logo' : ''}`}>{edition === 'B3' ? <img src={sitePath('/brand/okin-logo.png')} width={20} height={20} alt="" /> : <Icon name="cross" />}</span><span>2026 옥인교회</span>{(admin || edition !== 'B3') && <span className="term-label">{edition && <b className="edition-label">{edition}</b>}{admin ? '안내 관리' : '10.25 — 11.08'}</span>}</div><div className="brand-title">아버지<span>기도학교</span></div>{variant === 'B' && !admin && <p className="brand-subtitle">기도하는 아버지, 함께 세워가는 가정</p>}</header>;
 }
 export function Tabs({ value, onChange, disabled = false, enhanced = false }: { value: Category; onChange: (value: Category) => void; disabled?: boolean; enhanced?: boolean }) {
   function keydown(e: KeyboardEvent<HTMLButtonElement>, index: number) {
