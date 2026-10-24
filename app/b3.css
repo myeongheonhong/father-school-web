@@ -103,15 +103,12 @@
 .b3-contact-toggle>svg{transition:transform 380ms cubic-bezier(.22,1,.36,1)}
 .b3-contact-toggle[aria-expanded=true]{background:#eff3f8;color:#294c73}
 .b3-contact-toggle[aria-expanded=true]>svg{transform:rotate(180deg)}
-.b3-contact-collapse{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows 440ms cubic-bezier(.22,1,.36,1),opacity 340ms ease}
+.b3-contact-collapse{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows 440ms cubic-bezier(.4,0,.2,1),opacity 360ms ease}
 .b3-contact-collapse[data-open=true]{grid-template-rows:1fr;opacity:1}
 .b3-contact-collapse>div{min-height:0;overflow:hidden;visibility:hidden;transition:visibility 0s linear 440ms}
 .b3-contact-collapse[data-open=true]>div{visibility:visible;transition-delay:0s}
 .b3-roster-card{transition:border-color 320ms ease,box-shadow 320ms ease}
 .b3-roster-card[data-reading=true]{border-color:#c7b68e;box-shadow:0 4px 18px #102f560a}
-/* Automatic changes preserve the reading position instead of animating height above it. */
-.b3-roster-results[data-auto-switch=true] .b3-contact-collapse{transition:opacity 340ms ease}
-.b3-roster-results[data-auto-switch=true] .b3-contact-collapse>div{transition:none}
 .b3-contact-collapse[data-open=true] .b3-contact-list{animation:b3-contact-reveal 460ms cubic-bezier(.22,1,.36,1) both}
 .b3-contact-collapse[data-open=true] .b3-contact-list>li{animation:b3-contact-row 320ms cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--contact-order,0)*28ms)}
 @keyframes b3-contact-reveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}

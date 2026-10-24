@@ -4,11 +4,15 @@ import { readingGroup, type ReadingAnchor, type ReadingPosition } from '@/lib/re
 
 export function useScrollContacts(ids: string[], filter: RefObject<HTMLDivElement | null>) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [automatic, setAutomatic] = useState(true);
   const elements = useRef(new Map<string, HTMLElement>());
   const current = useRef<string | null>(null);
   const lastScroll = useRef(0);
-  const anchor = useRef<{ element: HTMLElement; documentTop: number } | null>(null);
+  const motion = useRef<{
+    element: HTMLElement; documentTop: number; compensate: boolean; panels: HTMLElement[];
+  } | null>(null);
+  const animating = useRef(false);
+  const scheduleUpdate = useRef<() => void>(() => {});
+  const captureScroll = useRef<() => void>(() => {});
   const manual = useRef<{ candidate: string | null } | null>(null);
   const signature = JSON.stringify(ids);
 
@@ -36,21 +40,52 @@ export function useScrollContacts(ids: string[], filter: RefObject<HTMLDivElemen
   const change = useCallback((id: string | null, auto: boolean) => {
     if (current.current === id) return;
     const compensate = auto || !!(current.current && id);
-    const element = id ? elements.current.get(id) : undefined;
-    anchor.current = compensate && element ? { element, documentTop: element.getBoundingClientRect().top + window.scrollY } : null;
+    const element = elements.current.get(id ?? current.current ?? '');
+    const panels = [current.current, id].flatMap(cardId => {
+      const panel = cardId ? elements.current.get(cardId)?.querySelector<HTMLElement>('.b3-contact-collapse') : null;
+      return panel ? [panel] : [];
+    });
+    motion.current = element ? {
+      element, documentTop: element.getBoundingClientRect().top + window.scrollY, compensate, panels,
+    } : null;
     current.current = id;
-    setAutomatic(compensate);
     setExpandedId(id);
   }, []);
 
   useLayoutEffect(() => {
-    const pending = anchor.current;
-    anchor.current = null;
-    if (!pending?.element.isConnected) return;
-    const shift = pending.element.getBoundingClientRect().top + window.scrollY - pending.documentTop;
-    if (Math.abs(shift) > .5) window.scrollBy({ top: shift, behavior: 'instant' });
-    // Ignore the scroll event produced by our own position correction.
-    lastScroll.current = window.scrollY;
+    const pending = motion.current;
+    motion.current = null;
+    if (!pending) return;
+    let frame = 0;
+    animating.current = true;
+
+    const followMotion = () => {
+      if (!pending.element.isConnected) {
+        animating.current = false;
+        return;
+      }
+      // Preserve genuine scrolling, then compensate only for the changing height above this card.
+      captureScroll.current();
+      const documentTop = pending.element.getBoundingClientRect().top + window.scrollY;
+      const shift = documentTop - pending.documentTop;
+      pending.documentTop = documentTop;
+      if (pending.compensate && Math.abs(shift) > .01) {
+        window.scrollBy({ top: shift, behavior: 'instant' });
+        lastScroll.current = window.scrollY;
+      }
+      // Use the actual CSS transition lifetime, including reversals and reduced-motion settings.
+      const moving = pending.panels.some(panel => panel.getAnimations().some(animation => animation.pending || animation.playState === 'running'));
+      if (moving) frame = requestAnimationFrame(followMotion);
+      else {
+        animating.current = false;
+        scheduleUpdate.current();
+      }
+    };
+    followMotion();
+    return () => {
+      cancelAnimationFrame(frame);
+      animating.current = false;
+    };
   }, [expandedId]);
 
   useEffect(() => {
@@ -58,14 +93,15 @@ export function useScrollContacts(ids: string[], filter: RefObject<HTMLDivElemen
     let frame = 0;
     let direction: -1 | 0 | 1 = 0;
     manual.current = null;
-    anchor.current = null;
+    motion.current = null;
     current.current = null;
     setExpandedId(null);
-    setAutomatic(true);
     lastScroll.current = window.scrollY;
 
     function update() {
       frame = 0;
+      // Re-evaluate once the cards settle; intermediate heights must not switch the active group.
+      if (animating.current) return;
       const focused = document.activeElement;
       if (focused?.matches(':focus-visible') && focused.closest('.b3-contact-collapse[data-open=true]')) return;
       const { anchors, position } = measure(orderedIds, direction);
@@ -87,6 +123,8 @@ export function useScrollContacts(ids: string[], filter: RefObject<HTMLDivElemen
       schedule();
     }
     function resize() { direction = 0; schedule(); }
+    scheduleUpdate.current = schedule;
+    captureScroll.current = scroll;
     window.addEventListener('scroll', scroll, { passive: true });
     window.addEventListener('resize', resize);
     schedule();
@@ -94,6 +132,8 @@ export function useScrollContacts(ids: string[], filter: RefObject<HTMLDivElemen
       cancelAnimationFrame(frame);
       window.removeEventListener('scroll', scroll);
       window.removeEventListener('resize', resize);
+      scheduleUpdate.current = () => {};
+      captureScroll.current = () => {};
     };
   }, [signature, measure, change]);
 
@@ -103,5 +143,5 @@ export function useScrollContacts(ids: string[], filter: RefObject<HTMLDivElemen
     change(current.current === id ? null : id, false);
   }
 
-  return { expandedId, automatic, register, toggle };
+  return { expandedId, register, toggle };
 }
