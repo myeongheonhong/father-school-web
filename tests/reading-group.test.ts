@@ -27,3 +27,20 @@ test('the last group still opens when its header cannot reach the upper reading 
   assert.equal(readingGroup([{id:'9',top:50},{id:'10',top:500}], {...position,current:'9',atBottom:true}), '10');
   assert.equal(readingGroup([{id:'9',top:50},{id:'10',top:900}], {...position,current:'9',atBottom:true}), '9');
 });
+
+test('reaching the bottom from group 8 opens group 9 before group 10', () => {
+  const bottom = [{id:'8',top:-497},{id:'9',top:151},{id:'10',top:447}];
+  assert.equal(readingGroup(bottom, {...position,current:'8',atBottom:true}), '9');
+  assert.equal(readingGroup(bottom, {...position,current:null,atBottom:true}), '9');
+  // After group 8 closes and group 9 opens, scroll compensation leaves more room below.
+  const settled = [{id:'8',top:-144},{id:'9',top:151},{id:'10',top:799}];
+  assert.equal(readingGroup(settled, {...position,current:'9',atBottom:false}), '9');
+  // Continuing down from the now-visible group 9 can reveal group 10.
+  assert.equal(readingGroup(bottom, {...position,current:'9',atBottom:true}), '10');
+});
+
+test('scrolling upward at the bottom cannot force the last group to open', () => {
+  const bottom = [{id:'8',top:-500},{id:'9',top:50},{id:'10',top:500}];
+  assert.equal(readingGroup(bottom, {...position,current:'9',atBottom:true,direction:-1}), '9');
+  assert.equal(readingGroup(bottom, {...position,current:'10',atBottom:true,direction:-1}), '9');
+});

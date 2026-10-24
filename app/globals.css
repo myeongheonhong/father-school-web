@@ -126,3 +126,5 @@ button,input,textarea,select{font-family:inherit}select{font:inherit}input,texta
 .b2-card-members .b2-members-empty{font-size:14px;color:#718096;margin-top:10px}
 .b2-roster-first .b2-group-notice{margin:14px 0 0}
 @media(max-width:360px){.b2-group-card{padding:15px}.b2-group-card-heading{gap:10px}.b2-card-count{padding:4px 6px;font-size:11px}.b2-card-count svg{display:none}.b2-group-card-heading h2{min-width:49px;min-height:47px;font-size:21px}.b2-card-leader>strong{font-size:18px}.b2-people li{font-size:16px}}
+
+.page-footer .footer-brand{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}.footer-brand img{display:block;width:16px;height:16px;object-fit:contain;border-radius:4px;background:#fff}

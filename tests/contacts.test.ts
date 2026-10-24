@@ -19,10 +19,11 @@ test('B3 connects every roster name to one valid phone number', () => {
 
 test('corrected names match their phone numbers in the supplied roster', () => {
   const people = data.groups.flatMap(groupContacts);
+  assert.equal(people.find(person => person.phone === '010-4781-7145')?.name, '이건회');
   assert.equal(people.find(person => person.phone === '010-8464-3764')?.name, '노운식');
   assert.equal(people.find(person => person.phone === '010-6449-9122')?.name, '최웅조');
   assert.equal(people.find(person => person.phone === '010-9879-7820')?.name, '정태흥');
-  assert.ok(!/노윤식|최용조|정태홍/.test(JSON.stringify(data)));
+  assert.ok(!/이건희|노윤식|최용조|정태홍/.test(JSON.stringify(data)));
 });
 
 test('admin export/import preserves the full contact roster and changed phone numbers', () => {

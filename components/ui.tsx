@@ -32,4 +32,4 @@ export function Tabs({ value, onChange, disabled = false, enhanced = false }: { 
   }
   return <nav className={`category-nav${enhanced ? ' b3-tabs' : ''}`} aria-label="주차 및 조편성"><div role="tablist" aria-label="볼 내용" style={enhanced ? { '--active-tab': categories.indexOf(value) } as CSSProperties : undefined}>{enhanced && <span className="b3-tab-indicator" data-groups-active={value === 'groups'} aria-hidden="true" />}{categories.map((c, i) => <button key={c} id={`tab-${c}`} role="tab" aria-selected={value === c} aria-controls="content" tabIndex={value === c ? 0 : -1} disabled={disabled} onKeyDown={e => keydown(e, i)} onClick={() => onChange(c)}>{enhanced && c === 'groups' && <Icon name="people" />}{c === 'groups' ? '조편성' : `${c}주차`}</button>)}</div></nav>;
 }
-export function Footer() { return <footer className="page-footer"><span>옥인교회</span><span>2026 아버지기도학교</span></footer>; }
+export function Footer() { return <footer className="page-footer"><span className="footer-brand"><img src={sitePath('/brand/okin-logo.png')} width={16} height={16} alt="" />옥인교회</span><span>2026 아버지기도학교</span></footer>; }

@@ -6,10 +6,14 @@ export function readingGroup(anchors: ReadingAnchor[], position: ReadingPosition
   const { line, current, direction, atBottom, viewportHeight } = position;
   if (!anchors.length) return null;
   const last = anchors[anchors.length - 1];
-  if (atBottom && last.top < viewportHeight - 56) return last.id;
+  const previous = anchors.findIndex(anchor => anchor.id === current);
+  if (atBottom && direction > 0 && last.top < viewportHeight - 56) {
+    // Closing the preceding card creates room to keep scrolling. Read it before opening the last.
+    const index = previous < anchors.length - 2 ? Math.max(0, anchors.length - 2) : anchors.length - 1;
+    return anchors[index].id;
+  }
   let candidate = -1;
   anchors.forEach((anchor, index) => { if (anchor.top <= line) candidate = index; });
-  const previous = anchors.findIndex(anchor => anchor.id === current);
   if (previous >= 0) {
     if (direction > 0 && candidate < previous) return current;
     if (direction < 0 && candidate > previous) return current;
