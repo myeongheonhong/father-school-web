@@ -1,7 +1,9 @@
 export const variants = ['A', 'B', 'C'] as const;
 export type Variant = typeof variants[number];
+export type Edition = 'B2' | 'B3';
 export type Week = { title: string; date: string; time: string; scripture: string; speaker: string; poster: string; worship: string; questions: string[] };
-export type Group = { id: string; name: string; leader: string; members: string; notice: string };
+export type Contact = { name: string; phone: string };
+export type Group = { id: string; name: string; leader: string; members: string; notice: string; contacts?: Contact[] };
 export type Content = { schemaVersion: 1; defaultVariant: Variant | null; updatedAt: string; weeks: Week[]; groupPlace: string; groupNotice: string; groups: Group[] };
 export const MAX_CONTENT_BYTES = 15 * 1024 * 1024;
 export const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '/father-school-web';
@@ -40,7 +42,22 @@ export function validateContent(input: unknown): Content {
     const g = record(item), id = str(g.id, '조 ID', 100, true);
     if (ids.has(id)) throw new Error('중복된 조 ID가 있습니다.');
     ids.add(id);
-    return { id, name: str(g.name, '조 이름', 100, true), leader: str(g.leader, '조장', 100), members: str(g.members, '조원', 3000), notice: str(g.notice, '조별 안내', 1000) };
+    const group: Group = { id, name: str(g.name, '조 이름', 100, true), leader: str(g.leader, '조장', 100), members: str(g.members, '조원', 3000), notice: str(g.notice, '조별 안내', 1000) };
+    if (g.contacts !== undefined) {
+      if (!Array.isArray(g.contacts) || g.contacts.length > 100) throw new Error('조별 연락처는 최대 100명까지 등록할 수 있습니다.');
+      const names = new Set<string>();
+      const roster = new Set([group.leader.trim(), ...group.members.split(/[,，\n]+/).map(name => name.trim())].filter(Boolean));
+      group.contacts = g.contacts.map(item => {
+        const contact = record(item), name = str(contact.name, '연락처 이름', 100, true).trim();
+        const phone = str(contact.phone, `${name} 전화번호`, 20).trim();
+        if (phone && !/^01[016789]-?\d{3,4}-?\d{4}$/.test(phone)) throw new Error(`${name} 전화번호는 010-1234-5678 형식으로 입력해주세요.`);
+        if (names.has(name)) throw new Error('같은 이름의 연락처가 중복되어 있습니다.');
+        if (!roster.has(name)) throw new Error(`${name} 연락처는 이 조의 명단에 없습니다.`);
+        names.add(name);
+        return { name, phone };
+      });
+    }
+    return group;
   });
   const updatedAt = str(data.updatedAt, '저장 날짜', 80, true);
   if (!Number.isFinite(Date.parse(updatedAt))) throw new Error('저장 날짜가 올바르지 않습니다.');

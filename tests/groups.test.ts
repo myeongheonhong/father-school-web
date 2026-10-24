@@ -10,7 +10,7 @@ test('B2 contains 10 groups and all 60 names, with no phone numbers', () => {
   assert.equal(data.groups.reduce((sum, g) => sum + groupPeople(g).length, 0), 60);
   assert.ok(data.groups.every(g => groupPeople(g).filter(p => p.leader).length === 1));
   assert.equal(/010[-\s]?\d{4}[-\s]?\d{4}/.test(JSON.stringify(data)), false);
-  assert.deepEqual(data.groups.map(g => g.leader), ['이건희','노윤식','강정수','임은성','임양순','장래천','인금환','정현기','최영우','백무열']);
+  assert.deepEqual(data.groups.map(g => g.leader), ['이건희','노운식','강정수','임은성','임양순','장래천','인금환','정현기','최영우','백무열']);
 });
 test('all roster names can find their own group, including leaders', () => {
   for (const g of data.groups) for (const p of groupPeople(g)) {

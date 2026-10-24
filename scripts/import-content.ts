@@ -3,8 +3,8 @@ import { resolve } from 'node:path';
 import { parseContent, exportContent } from '../lib/content';
 const path = process.argv[2];
 const edition = process.argv[3];
-if (edition && edition !== 'B2') { console.error('버전은 B2만 지정할 수 있습니다.'); process.exit(1); }
-const destination = edition === 'B2' ? 'public/content-b2.json' : 'public/content.json';
+if (edition && !['B2', 'B3'].includes(edition)) { console.error('버전은 B2 또는 B3를 지정해주세요.'); process.exit(1); }
+const destination = edition ? `public/content-${edition.toLowerCase()}.json` : 'public/content.json';
 if (!path) { console.error('사용법: npm run import-content -- /경로/content.json'); process.exit(1); }
 try {
   const data = parseContent(await readFile(resolve(path), 'utf8'));
