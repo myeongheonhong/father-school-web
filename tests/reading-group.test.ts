@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readingGroup, type ReadingPosition } from '../lib/reading-group';
 const position: ReadingPosition = { line: 300, current: null, direction: 1, atBottom: false, viewportHeight: 800 };
 
-test('contacts open as a group reaches the reading area, one group at a time', () => {
+test('identifies the group heading in the reading area', () => {
   assert.equal(readingGroup([{id:'1',top:500},{id:'2',top:800}], position), null);
   assert.equal(readingGroup([{id:'1',top:250},{id:'2',top:550}], position), '1');
   assert.equal(readingGroup([{id:'1',top:-200},{id:'2',top:250}], {...position,current:'1'}), '2');
@@ -16,7 +16,7 @@ test('small scroll changes at a boundary do not toggle two cards repeatedly', ()
   assert.equal(readingGroup([{id:'1',top:0},{id:'2',top:310}], {...position,current:'2',direction:-1}), '2');
   assert.equal(readingGroup([{id:'1',top:0},{id:'2',top:340}], {...position,current:'2',direction:-1}), '1');
 });
-test('position correction cannot send the reader back to an earlier group', () => {
+test('layout changes cannot send the reading indicator against the scroll direction', () => {
   assert.equal(readingGroup([{id:'1',top:100},{id:'2',top:500}], {...position,current:'2'}), '2');
   assert.equal(readingGroup([{id:'1',top:-300},{id:'2',top:100}], {...position,current:'1',direction:-1}), '1');
 });
@@ -32,8 +32,8 @@ test('reaching the bottom from group 8 opens group 9 before group 10', () => {
   const bottom = [{id:'8',top:-497},{id:'9',top:151},{id:'10',top:447}];
   assert.equal(readingGroup(bottom, {...position,current:'8',atBottom:true}), '9');
   assert.equal(readingGroup(bottom, {...position,current:null,atBottom:true}), '9');
-  // After group 8 closes and group 9 opens, scroll compensation leaves more room below.
-  const settled = [{id:'8',top:-144},{id:'9',top:151},{id:'10',top:799}];
+  // Opening group 9 adds room below its heading while group 8 stays expanded.
+  const settled = [{id:'8',top:-497},{id:'9',top:151},{id:'10',top:799}];
   assert.equal(readingGroup(settled, {...position,current:'9',atBottom:false}), '9');
   // Continuing down from the now-visible group 9 can reveal group 10.
   assert.equal(readingGroup(bottom, {...position,current:'9',atBottom:true}), '10');
