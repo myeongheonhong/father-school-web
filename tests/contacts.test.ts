@@ -9,9 +9,9 @@ const data = validateContent(JSON.parse(readFileSync('public/content-b3.json', '
 test('B3 connects every roster name to one valid phone number', () => {
   const people = data.groups.flatMap(groupContacts);
   assert.equal(data.groups.length, 10);
-  assert.equal(people.length, 60);
+  assert.equal(people.length, 61);
   assert.equal(people.filter(person => person.leader).length, 10);
-  assert.equal(new Set(people.map(person => person.phone)).size, 60);
+  assert.equal(new Set(people.map(person => person.phone)).size, 61);
   assert.ok(people.every(person => /^010-\d{4}-\d{4}$/.test(person.phone)));
   assert.ok(people.every(person => phoneHref(person.phone)?.startsWith('tel:010')));
   for (const group of data.groups) assert.equal(group.contacts?.length, groupContacts(group).length);
