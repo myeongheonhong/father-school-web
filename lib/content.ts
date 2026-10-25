@@ -5,6 +5,9 @@ export type Week = { title: string; date: string; time: string; scripture: strin
 export type Contact = { name: string; phone: string };
 export type Group = { id: string; name: string; leader: string; members: string; notice: string; contacts?: Contact[] };
 export type Content = { schemaVersion: 1; defaultVariant: Variant | null; updatedAt: string; weeks: Week[]; groupPlace: string; groupNotice: string; groups: Group[] };
+export function sameContent(a: Content, b: Content): boolean {
+  return JSON.stringify({ ...a, updatedAt: '' }) === JSON.stringify({ ...b, updatedAt: '' });
+}
 export const MAX_CONTENT_BYTES = 15 * 1024 * 1024;
 export const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '/father-school-web';
 export const sitePath = (path: string) => `${basePath}${path}`;
@@ -43,6 +46,8 @@ export function validateContent(input: unknown): Content {
     if (ids.has(id)) throw new Error('중복된 조 ID가 있습니다.');
     ids.add(id);
     const group: Group = { id, name: str(g.name, '조 이름', 100, true), leader: str(g.leader, '조장', 100), members: str(g.members, '조원', 3000), notice: str(g.notice, '조별 안내', 1000) };
+    const rosterNames = [group.leader.trim(), ...group.members.split(/[,，\n]+/).map(name => name.trim())].filter(Boolean);
+    if (new Set(rosterNames).size !== rosterNames.length) throw new Error(`${group.name}에 같은 이름이 중복되어 있습니다.`);
     if (g.contacts !== undefined) {
       if (!Array.isArray(g.contacts) || g.contacts.length > 100) throw new Error('조별 연락처는 최대 100명까지 등록할 수 있습니다.');
       const names = new Set<string>();
@@ -56,6 +61,7 @@ export function validateContent(input: unknown): Content {
         names.add(name);
         return { name, phone };
       });
+      if (names.size !== roster.size) throw new Error(`${group.name} 명단과 연락처 이름이 일치하지 않습니다. 번호가 없으면 빈칸으로 등록해주세요.`);
     }
     return group;
   });

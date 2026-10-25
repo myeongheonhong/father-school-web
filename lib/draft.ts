@@ -9,21 +9,28 @@ function openDB(): Promise<IDBDatabase> {
   });
 }
 export async function loadDraft(key = 'current'): Promise<Content | null> {
+  return (await loadDraftRecord(key))?.content ?? null;
+}
+export type DraftRecord = { content: Content; revision?: string };
+export async function loadDraftRecord(key = 'current'): Promise<DraftRecord | null> {
   const db = await openDB();
   try {
     return await new Promise((resolve, reject) => {
       const request = db.transaction(STORE).objectStore(STORE).get(key);
-      request.onsuccess = () => { try { resolve(request.result ? validateContent(request.result) : null); } catch (e) { reject(e); } };
+      request.onsuccess = () => { try {
+        const value = request.result;
+        resolve(value ? { content: validateContent(value.content ?? value), revision: value.revision } : null);
+      } catch (e) { reject(e); } };
       request.onerror = () => reject(new Error('임시 저장 내용을 불러오지 못했습니다.'));
     });
   } finally { db.close(); }
 }
-export async function saveDraft(content: Content, key = 'current'): Promise<void> {
+export async function saveDraft(content: Content, key = 'current', revision?: string): Promise<void> {
   const data = validateContent(content), db = await openDB();
   try {
     await new Promise<void>((resolve, reject) => {
       const transaction = db.transaction(STORE, 'readwrite');
-      transaction.objectStore(STORE).put(data, key);
+      transaction.objectStore(STORE).put({ content: data, revision }, key);
       transaction.oncomplete = () => resolve();
       transaction.onerror = () => reject(new Error('저장 공간이 부족하거나 임시 저장이 차단되어 있습니다. 배포 파일을 내려받아 보관해주세요.'));
       transaction.onabort = () => reject(new Error('임시 저장이 완료되지 않았습니다.'));
@@ -42,6 +49,11 @@ export async function imageData(file: File): Promise<string> {
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('이미지 처리 기능을 사용할 수 없습니다.');
     ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL('image/jpeg', 0.9);
+    // Keep three replaced posters within the direct-publish request size.
+    for (const quality of [0.88, 0.75, 0.62, 0.5]) {
+      const result = canvas.toDataURL('image/jpeg', quality);
+      if (result.length < 850 * 1024) return result;
+    }
+    throw new Error('이미지 용량이 큽니다. 사진을 자르거나 더 작은 이미지로 선택해주세요.');
   } finally { bitmap.close(); }
 }

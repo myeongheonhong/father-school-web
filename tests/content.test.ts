@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { fixture } from './fixtures/content';
 import { validateContent, parseContent, exportContent } from '../lib/content';
-const original = JSON.parse(readFileSync('public/content.json', 'utf8'));
+const original = fixture;
 test('published content preserves all three posters and their accessible reading text', () => {
   const data = validateContent(original);
   assert.equal(data.weeks.length, 3);
