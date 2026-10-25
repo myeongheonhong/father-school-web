@@ -354,7 +354,7 @@
       "id": "b3-group-10",
       "name": "10조",
       "leader": "백무열",
-      "members": "김동수\n정태흥\n정승일\n강수호\n유성일\n한영태",
+      "members": "김동수\n정태흥\n정승일\n강수호\n유성일\n한영태\n강나무",
       "notice": "",
       "contacts": [
         {
@@ -384,11 +384,15 @@
         {
           "name": "한영태",
           "phone": "010-6318-2231"
+        },
+        {
+          "name": "강나무",
+          "phone": "010-7205-6318"
         }
       ]
     }
   ],
   "schemaVersion": 1,
   "defaultVariant": null,
-  "updatedAt": "2026-10-25T06:27:22.667Z"
+  "updatedAt": "2026-10-25T06:54:17.783Z"
 }
