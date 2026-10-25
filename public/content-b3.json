@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "defaultVariant": null,
-  "updatedAt": "2026-10-25T14:24:32.925Z",
+  "updatedAt": "2026-10-25T14:27:06.426Z",
   "weeks": [
     {
       "title": "기도는 축복입니다.",
@@ -46,7 +46,7 @@
       "id": "b3-group-1",
       "name": "1조",
       "leader": "이건회",
-      "members": "최동휘\n장세윤\n박창홍\n정성호\n김태균\n홍명헌",
+      "members": "최동휘\n장세윤\n박창홍\n정성호\n김태균",
       "notice": "",
       "contacts": [
         {
@@ -72,10 +72,6 @@
         {
           "name": "김태균",
           "phone": "010-7339-0011"
-        },
-        {
-          "name": "홍명헌",
-          "phone": "010-3024-7076"
         }
       ]
     },
