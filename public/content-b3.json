@@ -1,4 +1,7 @@
 {
+  "schemaVersion": 1,
+  "defaultVariant": null,
+  "updatedAt": "2026-10-25T13:29:34.835Z",
   "weeks": [
     {
       "title": "기도는 축복입니다.",
@@ -9,7 +12,7 @@
       "poster": "/posters/week-1.png",
       "worship": "찬양 | 아버지 찬양팀\n기도 | 이건회 장로\n말씀 | 장재기 목사\n기도회 | 장재기 목사",
       "questions": [
-        "자녀를 양육하면서 나의 한계를 느낄 때는 언제입니까? 그 순간 하나님의 도움을 어떻게 구하고 경험하고 있습니까?"
+        "자녀를 양육하면서 나의 한계를 느낄 때는 언제입니까? 그 순간 하나님의 도움을 어떻게 구하고 경험하고 있습니까?\n"
       ]
     },
     {
@@ -38,8 +41,6 @@
       ]
     }
   ],
-  "groupPlace": "5층",
-  "groupNotice": "조별 나눔 및 식사는 5층에서 진행합니다.",
   "groups": [
     {
       "id": "b3-group-1",
@@ -392,7 +393,6 @@
       ]
     }
   ],
-  "schemaVersion": 1,
-  "defaultVariant": null,
-  "updatedAt": "2026-10-25T06:54:17.783Z"
+  "groupPlace": "5층",
+  "groupNotice": "조별 나눔 및 식사는 5층에서 진행합니다."
 }
