@@ -1,5 +1,5 @@
 /* B3: the accepted B2 foundation, with contact rows and clearer navigation. */
-.b3-app{--b3-gold:#e9ca87;--b3-nav-height:70px;overflow-x:clip;overflow-anchor:none}
+.b3-app{--b3-gold:#e9ca87;--b3-nav-height:70px;overflow-x:clip}
 .b3-app[data-theme=b] .brand-header{border-top:0}
 .b3-app .brand-logo{width:20px;height:20px;flex-shrink:0;overflow:hidden;border-radius:5px;background:#fff;box-shadow:0 0 0 1px #ffffff14}
 .b3-app .brand-logo img{display:block;width:100%;height:100%;object-fit:contain}
@@ -99,7 +99,5 @@
 .b3-contact-collapse[data-open=true]{grid-template-rows:1fr;opacity:1}
 .b3-contact-collapse>div{min-height:0;overflow:hidden;visibility:hidden;contain:layout paint;transition:visibility 0s linear 300ms}
 .b3-contact-collapse[data-open=true]>div{visibility:visible;transition-delay:0s}
-.b3-roster-card{transition:border-color 200ms ease}
-.b3-roster-card[data-reading=true]{border-color:#c7b68e;box-shadow:0 4px 18px #102f560a}
 @media(hover:hover){.b3-contact-toggle:hover{background:#f1f5fa;color:#244b75}}
 @media(max-width:350px){.b3-roster-card>header{padding:14px;gap:9px}.b3-roster-card>header h2{min-width:49px;font-size:21px}.b3-card-leader>strong{font-size:18px}.b3-roster-card>header>.b3-card-count{font-size:11px;padding:4px 6px}.b3-card-count svg{display:none}.b3-member-summary{padding-left:14px;padding-right:14px}}
