@@ -42,13 +42,13 @@ export default function Participant({ variant, initialData, edition }: { variant
   const [category, setCategory] = useState<Category>('1');
   const [direction, setDirection] = useState('forward');
   const enhanced = edition === 'B3';
-  const [reading, setReading] = useState(false);
+  const [reading, setReading] = useState(enhanced);
   const [viewer, setViewer] = useState(false);
   const [preview, setPreview] = useState('');
   useEffect(() => {
     const readTab = () => {
       const tab = new URLSearchParams(location.search).get('tab') as Category;
-      setCategory(categories.includes(tab) ? tab : '1'); setReading(false); setViewer(false);
+      setCategory(categories.includes(tab) ? tab : '1'); setReading(enhanced); setViewer(false);
     };
     readTab(); window.addEventListener('popstate', readTab);
     let active = true;
@@ -61,16 +61,16 @@ export default function Participant({ variant, initialData, edition }: { variant
       }).catch(() => { if (active) setPreview('초안을 불러오지 못해 현재 배포된 안내를 보여드립니다.'); });
     }
     return () => { active = false; window.removeEventListener('popstate', readTab); };
-  }, [edition]);
+  }, [edition, enhanced]);
   function changeTab(next: Category) {
     if (next === category) return;
     setDirection(categories.indexOf(next) > categories.indexOf(category) ? 'forward' : 'backward');
-    setCategory(next); setReading(false); setViewer(false);
+    setCategory(next); setReading(enhanced); setViewer(false);
     const url = new URL(location.href); url.searchParams.set('tab', next); history.pushState(null, '', url);
     window.scrollTo({ top: 0, behavior: enhanced && !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'instant' });
   }
   const number = Number(category) || 1, week = data.weeks[number - 1];
-  const panel = category === 'groups' ? (enhanced ? <GroupsB3 data={data} /> : edition ? <GroupsB2 data={data} /> : <Groups data={data} />) : <div className="week-content"><Summary week={week} number={number} variant={variant} /><div className="view-tools"><button onClick={() => setReading(!reading)} aria-pressed={reading}><Icon name="book" />{reading ? '이미지로 보기' : '글자로 읽기'}</button><button onClick={() => setViewer(true)}><Icon name="expand" />크게 보기</button></div>{reading ? <Reader week={week} number={number} notice={data.groupNotice} /> : <button className="poster-button" onClick={() => setViewer(true)} aria-label={`${number}주차 안내 이미지 확대`}><img className="week-poster" src={posterPath(week.poster)} alt={`${number}주차 안내. ${week.date} ${week.time}, ${week.title}, ${week.speaker}. 예배 순서와 나눔 질문은 글자로 읽기에서 확인하세요.`} width={887} height={1774} fetchPriority="high" /></button>}</div>;
+  const panel = category === 'groups' ? (enhanced ? <GroupsB3 data={data} /> : edition ? <GroupsB2 data={data} /> : <Groups data={data} />) : <div className="week-content"><Summary week={week} number={number} variant={variant} /><div className="view-tools"><button onClick={() => setReading(!reading)}><Icon name="book" />{reading ? '이미지로 보기' : '글자로 읽기'}</button>{!reading && <button onClick={() => setViewer(true)}><Icon name="expand" />크게 보기</button>}</div>{reading ? <Reader week={week} number={number} notice={data.groupNotice} /> : <button className="poster-button" onClick={() => setViewer(true)} aria-label={`${number}주차 안내 이미지 확대`}><img className="week-poster" src={posterPath(week.poster)} alt={`${number}주차 안내. ${week.date} ${week.time}, ${week.title}, ${week.speaker}. 예배 순서와 나눔 질문은 글자로 읽기에서 확인하세요.`} width={887} height={1774} fetchPriority="high" /></button>}</div>;
   return <div className={`app-shell ${edition ? 'b2-app' : ''} ${enhanced ? 'b3-app' : ''}`} data-theme={variant.toLowerCase()}>
     {preview && <aside className="preview-banner" role="status">{preview}<Link href={`/${edition ?? variant}/admin/`}>관리자로 돌아가기 →</Link></aside>}
     <Header variant={variant} edition={edition} /><Tabs value={category} onChange={changeTab} enhanced={enhanced} />
