@@ -5,6 +5,7 @@ import GroupsB2 from './GroupsB2';
 import GroupsB3 from './GroupsB3';
 import { type Content, type Edition, type Variant, type Week, posterPath } from '@/lib/content';
 import { loadDraft } from '@/lib/draft';
+import { readPublishedContent, mergePublishedContent } from '@/lib/published-content';
 import { categories, type Category, Header, Tabs, Footer, Icon } from './ui';
 
 function Summary({ week: w, number: n, variant }: { week: Week; number: number; variant: Variant }) {
@@ -45,6 +46,55 @@ export default function Participant({ variant, initialData, edition }: { variant
   const [reading, setReading] = useState(enhanced);
   const [viewer, setViewer] = useState(false);
   const [preview, setPreview] = useState('');
+  const [checking, setChecking] = useState(false);
+  const [syncMessage, setSyncMessage] = useState('최신 안내를 확인하고 있어요.');
+  const refreshPublished = useRef<() => void>(() => {});
+  useEffect(() => {
+    // Local previews must keep the draft, including edits that are not yet published.
+    if (new URLSearchParams(location.search).get('preview') === '1') return;
+    let active = true;
+    let latestKnown = initialData;
+    let controller: AbortController | undefined;
+    async function refresh(manual = false) {
+      if (controller || document.visibilityState === 'hidden') return;
+      controller = new AbortController();
+      const timeout = window.setTimeout(() => controller?.abort(), 15000);
+      setChecking(true);
+      if (manual) setSyncMessage('최신 안내를 확인하고 있어요.');
+      try {
+        const latest = await readPublishedContent(edition, controller.signal);
+        if (!active) return;
+        if (Date.parse(latest.updatedAt) < Date.parse(latestKnown.updatedAt)) {
+          setSyncMessage('배포 반영을 기다리고 있어요. 잠시 후 다시 확인해주세요.');
+          return;
+        }
+        const merged = mergePublishedContent(latestKnown, latest);
+        if (merged !== latestKnown) { latestKnown = merged; setData(merged); }
+        setSyncMessage('최신 배포 내용을 확인했어요.');
+      } catch {
+        if (active) setSyncMessage('연결을 확인해주세요. 이전 안내를 표시하고 있어요.');
+      } finally {
+        window.clearTimeout(timeout); controller = undefined;
+        if (active) setChecking(false);
+      }
+    }
+    const resume = () => { void refresh(); };
+    refreshPublished.current = () => { void refresh(true); };
+    resume();
+    const timer = window.setInterval(resume, 15000);
+    window.addEventListener('focus', resume);
+    window.addEventListener('pageshow', resume);
+    window.addEventListener('online', resume);
+    document.addEventListener('visibilitychange', resume);
+    return () => {
+      active = false; controller?.abort(); window.clearInterval(timer);
+      refreshPublished.current = () => {};
+      window.removeEventListener('focus', resume);
+      window.removeEventListener('pageshow', resume);
+      window.removeEventListener('online', resume);
+      document.removeEventListener('visibilitychange', resume);
+    };
+  }, [edition, initialData]);
   useEffect(() => {
     const readTab = () => {
       const tab = new URLSearchParams(location.search).get('tab') as Category;
@@ -74,6 +124,7 @@ export default function Participant({ variant, initialData, edition }: { variant
   return <div className={`app-shell ${edition ? 'b2-app' : ''} ${enhanced ? 'b3-app' : ''}`} data-theme={variant.toLowerCase()}>
     {preview && <aside className="preview-banner" role="status">{preview}<Link href={`/${edition ?? variant}/admin/`}>관리자로 돌아가기 →</Link></aside>}
     <Header variant={variant} edition={edition} /><Tabs value={category} onChange={changeTab} enhanced={enhanced} />
+    {!preview && <div className="content-refresh"><p role="status">{syncMessage}</p><button disabled={checking} onClick={() => refreshPublished.current()}>{checking ? '확인 중…' : '최신 내용 확인'}</button></div>}
     <main id="content" role="tabpanel" aria-labelledby={`tab-${category}`} tabIndex={0}>
       {enhanced ? <div key={category} className="b3-panel" data-direction={direction}>{panel}</div> : panel}
     </main><Footer />{viewer && <Viewer week={week} number={number} onClose={() => setViewer(false)} />}
